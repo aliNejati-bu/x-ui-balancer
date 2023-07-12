@@ -9,15 +9,13 @@ const sqlite3 = require('sqlite3').verbose();
  * @returns {string}
  */
 const getDBPath = () => {
-    return path.join(path.basename(__dirname), 'x-ui.db');
+    return path.join(path.join(__dirname, '..'), 'x-ui.db');
 };
 
 
 module.exports.getConnection = () => {
     return new sqlite3.Database(getDBPath(), function (err) {
         if (err) {
-            logger.error('error while connecting to database. at:' + getDBPath());
-            logger.error(err.message);
             exit({
                 meta: err,
                 message: 'error while connecting to database. at:' + getDBPath(),
