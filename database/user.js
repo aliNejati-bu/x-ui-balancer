@@ -133,6 +133,57 @@ module.exports.changeDown = (uuid, down) => {
     });
 };
 
+/**
+ *
+ * @param uuid{string}
+ * @param up{number}
+ * @returns {Promise<boolean>}
+ */
+module.exports.changeLastUp = (uuid, up) => {
+    const connections = getConnection();
+    return new Promise((resolve, reject) => {
+        connections.run('UPDATE inbounds SET last_up = ? WHERE settings LIKE ?', [
+            up,
+            '%' + uuid + '%'
+        ], function (err) {
+            if (err) {
+                exit({
+                    meta: err,
+                    type: 'db',
+                    message: 'cant update user.'
+                });
+            }
+            connections.close();
+            resolve(this.changes >= 1)
+        });
+    });
+};
+/**
+ *
+ * @param uuid{string}
+ * @param down{number}
+ * @returns {Promise<boolean>}
+ */
+module.exports.changeLastDown = (uuid, down) => {
+    const connections = getConnection();
+    return new Promise((resolve, reject) => {
+        connections.run('UPDATE inbounds SET last_down = ? WHERE settings LIKE ?', [
+            down,
+            '%' + uuid + '%'
+        ], function (err) {
+            if (err) {
+                exit({
+                    meta: err,
+                    type: 'db',
+                    message: 'cant update user.'
+                });
+            }
+            connections.close();
+            resolve(this.changes >= 1)
+        });
+    });
+};
+
 
 module.exports.initDB = () => {
     const connection = getConnection();
