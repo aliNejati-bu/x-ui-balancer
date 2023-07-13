@@ -133,3 +133,98 @@ module.exports.changeDown = (uuid, down) => {
     });
 };
 
+
+module.exports.initDB = () => {
+    const connection = getConnection();
+    connection.run(`PRAGMA foreign_keys = 0`, function (err) {
+        if (err) {
+            exit({meta: err, type: 'db', message: 'cant init db.'});
+        }
+        connection.run(`CREATE TABLE sqlitestudio_temp_table AS SELECT * FROM inbounds`, function (err) {
+            if (err) {
+                exit({meta: err, type: 'db', message: 'cant init db.'});
+            }
+            connection.run(`DROP TABLE inbounds`, function (err) {
+                if (err) {
+                    exit({meta: err, type: 'db', message: 'cant init db.'});
+                }
+                connection.run(`CREATE TABLE inbounds (
+    id              INTEGER,
+    user_id         INTEGER,
+    up              INTEGER,
+    down            INTEGER,
+    total           INTEGER,
+    remark          TEXT,
+    enable          NUMERIC,
+    expiry_time     INTEGER,
+    listen          TEXT,
+    port            INTEGER UNIQUE,
+    protocol        TEXT,
+    settings        TEXT,
+    stream_settings TEXT,
+    tag             TEXT    UNIQUE,
+    sniffing        TEXT,
+    last_up         INTEGER DEFAULT (0),
+    last_down       INTEGER DEFAULT (0),
+    PRIMARY KEY (
+        id
+    )
+)`, function (err) {
+                    if (err) {
+                        exit({meta: err, type: 'db', message: 'cant init db.'});
+                    }
+                    connection.run(`
+INSERT INTO inbounds (
+                         id,
+                         user_id,
+                         up,
+                         down,
+                         total,
+                         remark,
+                         enable,
+                         expiry_time,
+                         listen,
+                         port,
+                         protocol,
+                         settings,
+                         stream_settings,
+                         tag,
+                         sniffing
+                     )
+                     SELECT id,
+                            user_id,
+                            up,
+                            down,
+                            total,
+                            remark,
+                            enable,
+                            expiry_time,
+                            listen,
+                            port,
+                            protocol,
+                            settings,
+                            stream_settings,
+                            tag,
+                            sniffing
+                       FROM sqlitestudio_temp_table`, function (err) {
+                        if (err) {
+                            exit({meta: err, type: 'db', message: 'cant init db.'});
+                        }
+                        connection.run(`DROP TABLE sqlitestudio_temp_table`, function (err) {
+                            if (err) {
+                                exit({meta: err, type: 'db', message: 'cant init db.'});
+                            }
+                            connection.run(`PRAGMA foreign_keys = 1`, function (err) {
+                                if (err) {
+                                    exit({meta: err, type: 'db', message: 'cant init db.'});
+                                }
+                                console.log('db init...');
+                                connection.close();
+                            })
+                        })
+                    })
+                });
+            });
+        })
+    });
+}
