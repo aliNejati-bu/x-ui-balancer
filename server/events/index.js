@@ -5,5 +5,8 @@ module.exports.events = {
     userSetDown: 'set:down',
     userSetLastUp: 'set:last_up',
     userSetLastDown: 'set:last_down',
-    message: 'got'
+    message: 'got',
+    getAllUsers: 'user:all',
+    getAllUsersReceive: 'user:receive_all',
+    dbInit: 'db:init'
 };

@@ -4,7 +4,16 @@ const http = require('http');
 const server = http.createServer(app);
 const {Server} = require("socket.io");
 const {events} = require("./events");
-const {findByUuid, changeUp, changeDown, changeLastUp, changeLastDown} = require("../database/user");
+const {
+    findByUuid,
+    changeUp,
+    changeDown,
+    changeLastUp,
+    changeLastDown,
+    getAllUsers,
+    initDB
+} = require("../database/user");
+const e = require("express");
 const io = new Server(server);
 
 
@@ -44,6 +53,21 @@ io.on('connection', (socket) => {
             status: result
         })
     });
+
+
+    socket.on(events.getAllUsers, async () => {
+        const result = await getAllUsers();
+        socket.emit(events.getAllUsersReceive, result)
+    });
+
+    socket.on(events.dbInit, async () => {
+        await initDB()
+        socket.emit(events.message, {
+            events: events.dbInit,
+            status: true
+        })
+    });
+
 });
 
 server.listen(3035, () => {
