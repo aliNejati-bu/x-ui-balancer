@@ -1,10 +1,7 @@
-const {getAllUsers} = require("./database/user");
+const {getAllUsers, findByUuid} = require("./database/user");
 
 async function test() {
-    let all = await getAllUsers();
-    all.forEach((e) => {
-        console.log(e.settings);
-    })
+    console.log(await findByUuid('af48c3b6-2295-44fb-a895-7928ffb8a45b'));
 }
 
 test();
