@@ -16,10 +16,12 @@ const {exit} = require("../errorHandler");
  *     listen:string,
  *     port:number,
  *     protocol: string,
- *     settings0:string,
+ *     settings:string,
  *     stream_settings:string,
  *     tag:string,
- *     sniffing:string
+ *     sniffing:string,
+ *     last_down:number,
+ *     last_up:number
  * }>>}
  */
 module.exports.getAllUsers = () => {
