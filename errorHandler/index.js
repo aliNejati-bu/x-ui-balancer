@@ -6,4 +6,5 @@ module.exports.exit = (meta) => {
     logger.error(meta.message);
     logger.error(meta.meta);
     console.log(meta);
+    process.exit();
 }

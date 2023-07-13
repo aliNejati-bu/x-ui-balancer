@@ -63,7 +63,7 @@ module.exports.getAllUsers = () => {
 module.exports.findByUuid = (uuid) => {
     const connection = getConnection();
     return new Promise((resolve, reject) => {
-        connection.get('SELECT * FROM inbounds WHERE settings LIKE ?', ['%' + uuid + '%'],(err, row) => {
+        connection.get('SELECT * FROM inbounds WHERE settings LIKE ?', ['%' + uuid + '%'], (err, row) => {
             if (err) {
                 exit({
                     meta: err,
@@ -80,4 +80,56 @@ module.exports.findByUuid = (uuid) => {
         });
     })
 }
+
+
+/**
+ *
+ * @param uuid{string}
+ * @param up{number}
+ * @returns {Promise<boolean>}
+ */
+module.exports.changeUp = (uuid, up) => {
+    const connections = getConnection();
+    return new Promise((resolve, reject) => {
+        connections.run('UPDATE inbounds SET up = ? WHERE settings LIKE ?', [
+            up,
+            '%' + uuid + '%'
+        ], function (err) {
+            if (err) {
+                exit({
+                    meta: err,
+                    type: 'db',
+                    message: 'cant update user.'
+                });
+            }
+            connections.close();
+            resolve(this.changes >= 1)
+        });
+    });
+};
+/**
+ *
+ * @param uuid{string}
+ * @param down{number}
+ * @returns {Promise<boolean>}
+ */
+module.exports.changeDown = (uuid, down) => {
+    const connections = getConnection();
+    return new Promise((resolve, reject) => {
+        connections.run('UPDATE inbounds SET down = ? WHERE settings LIKE ?', [
+            down,
+            '%' + uuid + '%'
+        ], function (err) {
+            if (err) {
+                exit({
+                    meta: err,
+                    type: 'db',
+                    message: 'cant update user.'
+                });
+            }
+            connections.close();
+            resolve(this.changes >= 1)
+        });
+    });
+};
 
