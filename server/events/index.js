@@ -8,5 +8,8 @@ module.exports.events = {
     message: 'got',
     getAllUsers: 'user:all',
     getAllUsersReceive: 'user:receive_all',
-    dbInit: 'db:init'
+    dbInit: 'db:init',
+    allInbound: 'user:all_inbound',
+    updateUpAndDownInbound: 'set:inbound',
+    allInboundClient: 'user:all_inbound_client'
 };

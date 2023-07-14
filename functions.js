@@ -1,7 +1,3 @@
-const {getAllUsers, findByUuid, changeUp, changeDown, initDB} = require("./database/user");
+const {getAllUsers, findByEmail, changeUp, changeDown, initDB, changeUpAndDownInbound} = require("./database/user");
 
-async function test() {
-    initDB();
-}
 
-test();
