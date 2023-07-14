@@ -1,7 +1,7 @@
 const io = require('socket.io-client');
 const servers = require('./servers.json');
 const {exit} = require("../errorHandler");
-const {initDB, getUserById, updateUp, updateDown} = require("./function");
+const {initDB, getUserByEmail, updateUp, updateDown} = require("./function");
 const {getAllUsers, changeLastDown, changeLastUp} = require("../database/user");
 
 let dbCheck = false;
@@ -27,22 +27,17 @@ for (let i = 0; i < servers.servers.length; i++) {
         }
     }, 5000)
 }
-const serversObject = {};
-for (let i = 0; i < servers.servers.length; i++) {
-    serversObject[servers.servers[i].name] = servers.servers[i];
-}
-console.log(serversObject);
 setInterval(async () => {
     if (dbCheck) {
         console.log('syncing...');
         const allUsers = await getAllUsers();
         for (let i = 0; i < allUsers.length; i++) {
-            const userId = JSON.parse(allUsers[i].settings).clients[0].id;
+            const email = allUsers[i].email;
             let totalUp = 0;
             let totalDown = 0;
             for (let j = 0; j < servers.servers.length; j++) {
                 const socket = servers.servers[j].connection;
-                const user = await getUserById(socket, userId);
+                const user = await getUserByEmail(socket, email);
                 if (user != null) {
                     totalDown += user.down - allUsers[i].last_down;
                     totalUp += user.up - allUsers[i].last_up;
@@ -52,11 +47,11 @@ setInterval(async () => {
             totalUp = totalUp + allUsers[i].last_up;
             for (let j = 0; j < servers.servers.length; j++) {
                 const socket = servers.servers[j].connection;
-                await updateUp(socket, userId, totalUp);
-                await updateDown(socket, userId, totalDown);
+                await updateUp(socket, email, totalUp);
+                await updateDown(socket, email, totalDown);
             }
-            await changeLastDown(userId, totalDown);
-            await changeLastUp(userId, totalUp);
+            await changeLastDown(email, totalDown);
+            await changeLastUp(email, totalUp);
         }
         console.log('end sync.');
     }

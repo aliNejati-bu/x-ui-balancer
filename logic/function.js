@@ -26,9 +26,9 @@ function initDB(socket) {
     });
 }
 
-module.exports.getUserById = (socket, uuid) => {
+module.exports.getUserByEmail = (socket, email) => {
     return new Promise((resolve, reject) => {
-        socket.emit(events.getUser, uuid);
+        socket.emit(events.getUser, email);
         let check = false;
         socket.on(events.userReceive, (usr) => {
             check = true;

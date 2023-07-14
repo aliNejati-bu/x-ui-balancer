@@ -8,11 +8,13 @@ const {exit} = require("../errorHandler");
  * id:number,
  * inbound_id:number,
  * enable:number,
- * email:text,
+ * email:string,
  * up:number,
  * down:number,
  * expiry_time:number,
- * total:number
+ * total:number,
+ * last_down:number,
+ * last_up:number
  * }>>}
  */
 module.exports.getAllUsers = () => {
@@ -39,11 +41,13 @@ module.exports.getAllUsers = () => {
  * id:number,
  * inbound_id:number,
  * enable:number,
- * email:text,
+ * email:string,
  * up:number,
  * down:number,
  * expiry_time:number,
- * total:number
+ * total:number,
+ * last_down:number,
+ * last_up:number
  * }>|null}
  */
 module.exports.findByEmail = (email) => {
@@ -323,11 +327,13 @@ module.exports.allInbounds = () => {
  * id:number,
  * inbound_id:number,
  * enable:number,
- * email:text,
+ * email:string,
  * up:number,
  * down:number,
  * expiry_time:number,
- * total:number
+ * total:number,
+ * last_down:number,
+ * last_up:number
  * }>>}
  * @param id
  */
